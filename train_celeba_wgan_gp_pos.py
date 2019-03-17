@@ -34,7 +34,7 @@ def preprocess_fn(img):
     img = tf.to_float(tf.image.resize_images(img, [re_size, re_size], method=tf.image.ResizeMethod.BICUBIC)) / 127.5 - 1
     return img
 
-img_paths = glob.glob('./data/img_align_celeba/*.jpg')
+img_paths = glob.glob('../DCGAN-LSGAN-WGAN-WGAN-GP-Tensorflow/data/img_align_celeba/*.jpg')
 data_pool = utils.DiskImageData(img_paths, batch_size, shape=[218, 178, 3], preprocess_fn=preprocess_fn)
 
 
@@ -104,12 +104,12 @@ it_cnt, update_cnt = utils.counter()
 # saver
 saver = tf.train.Saver(max_to_keep=5)
 # summary writer
-dir_name = "celeba_ch_mask_output7"
-summary_writer = tf.summary.FileWriter('../hdd/summaries/celeba_wgan_gp' + dir_name, sess.graph)
+dir_name = "celeba_ch_mask_output8"
+summary_writer = tf.summary.FileWriter('./summaries/celeba_wgan_gp' + dir_name, sess.graph)
 
 ''' initialization '''
-load_dir = '../hdd/checkpoints/celeba_wgan_gpceleba_ch_mask'
-ckpt_dir = '../hdd/checkpoints/celeba_wgan_gp/' + dir_name
+load_dir = './checkpoints/celeba_wgan_gpceleba_ch_mask'
+ckpt_dir = './checkpoints/celeba_wgan_gp/' + dir_name
 utils.mkdir(ckpt_dir + '/')
 if not utils.load_checkpoint(load_dir, sess):
     sess.run(tf.global_variables_initializer())
@@ -163,10 +163,10 @@ try:
             print('Model saved in file: % s' % save_path)
 
         # sample
-        if (it + 1) % 1 == 0:
+        if (it + 1) % 100 == 0:
             f_sample_opt = sess.run(f_sample, feed_dict={z: z_ipt_sample, ch_input: ch_input_ipt_sample, ch_mask:ch_mask_ipt_sample})
 
-            save_dir = '../hdd/sample_images_while_training/' + dir_name
+            save_dir = './sample_images_while_training/' + dir_name
             utils.mkdir(save_dir + '/')
             utils.imwrite(utils.immerge(f_sample_opt, 10, 10), '%s/Epoch_(%d)_(%dof%d).png' % (save_dir, epoch, it_epoch, batch_epoch))
 
