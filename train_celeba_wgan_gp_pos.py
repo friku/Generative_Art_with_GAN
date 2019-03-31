@@ -34,7 +34,7 @@ def preprocess_fn(img):
     img = tf.to_float(tf.image.resize_images(img, [re_size, re_size], method=tf.image.ResizeMethod.BICUBIC)) / 127.5 - 1
     return img
 
-img_paths = glob.glob('../DCGAN-LSGAN-WGAN-WGAN-GP-Tensorflow/data/img_align_celeba/*.jpg')
+img_paths = glob.glob('../Generative_Art_with_GAN/datasets/img_align_celeba/*.jpg')
 data_pool = utils.DiskImageData(img_paths, batch_size, shape=[218, 178, 3], preprocess_fn=preprocess_fn)
 
 
@@ -72,7 +72,7 @@ with tf.device('/gpu:%d' % gpu_id):
         x = interpolate(real, fake)
         pred = f(x)
         gradients = tf.gradients(pred, x)[0]
-        slopes = tf.sqrt(tf.reduce_sum(tf.square(gradients), reduction_indices=range(1, x.shape.ndims)))
+        slopes = tf.sqrt(tf.reduce_sum(tf.square(gradients), reduction_indices=list(range(1, x.shape.ndims))))
         gp = tf.reduce_mean((slopes - 1.)**2)
         return gp
 
@@ -117,12 +117,13 @@ if not utils.load_checkpoint(load_dir, sess):
 ''' train '''
 try:
     z_ipt_sample = np.random.normal(size=[100, z_dim])
-    ch_input_ipt_sample = np.random.normal(size=(100,4,4,512))*4
+    # ch_input_ipt_sample = np.random.normal(size=(100,4,4,512))*4
 #    ch_input_ipt_sample = np.ones((100,4,4,512))/1.5
-#    ch_input_ipt_sample = np.zeros((100,4,4,512))
+    ch_input_ipt_sample = np.zeros((100,4,4,512))
 #    ch_mask_ipt_sample = np.ones((100,4,4,512))
 #    ch_mask_ori = np.zeros((4,4))
-    ch_mask_ori = np.array([[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]])
+    # ch_mask_ori = np.array([[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]])
+    ch_mask_ori = np.array([[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]])
 #    ch_mask_ori = np.identity(4)
     ch_mask_ipt_sample = np.tile(np.reshape(ch_mask_ori,[1,4,4,1]),(100,1,1,512))
     
