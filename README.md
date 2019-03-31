@@ -40,3 +40,4 @@ Once the datasets are set up, you can train your own Generative_Art_with_GAN net
 
 
 
+# stylegan
